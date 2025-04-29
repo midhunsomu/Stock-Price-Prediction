@@ -11,76 +11,84 @@ To develop a Recurrent Neural Network model for stock price prediction.
 ## Design Steps
 
 ### Step 1:
-Write your own steps
+Import necessary libraries.
 
 ### Step 2:
+Load and preprocess the data.
 
 ### Step 3:
+Create input-output sequences.
 
+### Step 2:
+Convert data to PyTorch tensors.
 
+### Step 3:
+Define the RNN model.
+
+### Step 2:
+Train the model using the training data.
+
+### Step 3:
+Evaluate the model and plot predictions.
 
 ## Program
-#### Name:Midhun S
-#### Register Number:212223240087
+#### Name: MIDHUN S
+#### Register Number: 212223240087
+
+
 ```Python 
 # Define RNN Model
 class RNNModel(nn.Module):
-    def __init__(self, input_size=1, hidden_size=64, num_layers=2, output_size=1): # Changed _init_ to __init__
-        super(RNNModel, self).__init__()
-        self.rnn = nn.RNN(input_size,hidden_size,num_layers,batch_first=True)
-        self.fc = nn.Linear(hidden_size,output_size)
+  def __init__(self, input_size=1, hidden_size=64, num_layers=2, output_size=1):
+    super(RNNModel, self).__init__()
+    self.rnn = nn.RNN(input_size, hidden_size, num_layers, batch_first = True)
+    self.fc = nn.Linear(hidden_size, output_size)
 
-    def forward(self,x):
-        out , _ = self.rnn(x)
-        out = self.fc(out[:,-1,:])
-        return out
-
+  def forward(self,x):
+    out, _ = self.rnn(x)
+    out = self.fc(out[:, -1, :])
+    return out
 
 model = RNNModel()
-criterion = nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(),lr=0.001)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = model.to(device)
 
 
 # Train the Model
-
-
-epochs=20
+epochs = 20
 model.train()
-train_losses=[]
+train_losses = []
 for epoch in range(epochs):
-  epoch_loss=0
-  for x_batch,y_batch in train_loader:
-    x_batch,y_batch=x_batch.to(device),y_batch.to(device)
+  epoch_loss = 0
+  for x_batch, y_batch in train_loader:
+    x_batch, y_batch = x_batch.to(device), y_batch.to(device)
     optimizer.zero_grad()
-    outputs=model(x_batch)
-    loss=criterion(outputs,y_batch)
+    outputs = model(x_batch)
+    loss = criterion(outputs, y_batch)
     loss.backward()
     optimizer.step()
-    epoch_loss+=loss.item()
-  train_losses.append(epoch_loss/len(train_loader))
-  print(f"Epoch [{epoch+1}/{epochs}],Loss: {train_losses[-1]:.4f}")
-
-
-
-
-
-
-
+    epoch_loss += loss.item()
+  train_losses.append(epoch_loss / len(train_loader))
+  print(f"Epoch [{epoch+1}/{epochs}], Loss:{train_losses[-1]:.4f}")
 ```
 
 ## Output
 
 ### True Stock Price, Predicted Stock Price vs time
+![image](https://github.com/user-attachments/assets/ee20ee9a-b02e-4e33-9351-7264cf42240e)
 
-![image](https://github.com/user-attachments/assets/cf3138a5-a184-4c3b-88c5-e0c2ac20e323)
-![image](https://github.com/user-attachments/assets/9e11c56e-d62e-453d-85cc-ab24ff85351f)
+
 
 
 ### Predictions 
+![image](https://github.com/user-attachments/assets/fbaacc77-a4fa-40d6-b871-ca2ca464c6c6)
 
-![image](https://github.com/user-attachments/assets/f5187a61-5d10-4475-a24e-8472f53ef416)
+
+
+
+
 
 
 ## Result
-
+The RNN model successfully predicts future stock prices based on historical closing prices. The predicted prices closely follow the actual prices, demonstrating the model's ability to capture temporal patterns. The performance of the model is evaluated by comparing the predicted and actual prices through visual plots.
 
